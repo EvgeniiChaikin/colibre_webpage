@@ -1,0 +1,109 @@
+<style>
+
+  body {
+      background: #f4f4f4;
+      margin: 2em 1.5em;
+  }
+
+  ul {
+      font-family: sans-serif;
+      list-style:none;
+      font-size: 12pt;
+      line-height: 13pt;
+      list-style-type:none;
+      padding: 0px;
+      margin: 0px;
+  }
+  
+  li {
+      font-family: sans-serif;
+      font-size: 12pt;
+      line-height: 14pt;
+      padding: 1px 5px;
+      margin: 1px 5px;
+  }
+  .content {
+      width: 1000px;
+      background-color: white;
+      margin-bottom: 5em;
+      padding: 1%;
+      -webkit-box-shadow: rgba(89, 89, 89, 0.449219) 2px 1px 9px 0px;
+      -moz-box-shadow: rgba(89, 89, 89, 0.449219) 2px 1px 9px 0px;
+      box-shadow: rgba(89, 89, 89, 0.449219) 2px 1px 9px 0px;
+      border: 0;
+      border-radius: 11px;
+      -moz-border-radius: 11px;
+      -webkit-border-radius: 11px;
+      height: 96%;
+      min-height: 90%;
+  
+  }
+  .size {
+      float: right;
+      color: gray;
+  }
+
+  h1 {
+      padding: 5px;
+      margin: 5px;
+      font-size:13pt;
+      border-bottom: 2px solid lightgray;
+  }
+  
+  h2 {
+      padding: 5px;
+      margin: 5px;
+      font-size:17pt;
+      border-bottom: 2px solid lightgray;
+  }
+  
+  a {
+      font-weight: 500;
+      perspective: 600px;
+      perspective-origin: 50% 100%;
+      transition: color 0.3s;
+      text-decoration: none;
+      color: #060606;
+  }
+  a:hover,
+  a:focus {
+      color: #e74c3c;
+  }
+  a::before {
+      background-color: #fff;
+      transition: transform 0.2s;
+      transition-timing-function: cubic-bezier(0.7,0,0.3,1);
+      transform: rotateX(90deg);
+      transform-origin: 50% 100%;
+  }
+  a:hover::before,
+  a:focus::before {
+      transform: rotateX(0deg);
+  }
+  a::after {
+      border-bottom: 2px solid #fff;
+  }
+
+  .tab {
+  overflow: hidden;
+  border: 1px solid #ccc;
+  background-color: #bcbdf7;
+  }
+  .tab button {
+  background-color: inherit;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  transition: 0.3s;
+  font-size: 17px;
+  }
+  .tab button:hover {
+  background-color: #ddd;
+  }
+  .tab button.active {
+  background-color: #fc8d9c
+  }
+
+</style>

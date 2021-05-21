@@ -1,0 +1,23 @@
+font.family: serif
+mathtext.fontset: stix
+text.usetex: True
+
+figure.autolayout: True
+
+legend.frameon: False
+
+axes.linewidth: 2
+axes.labelsize : 25
+
+lines.linewidth: 2
+lines.scale_dashes: False
+lines.markersize : 10
+
+xtick.direction: in
+ytick.direction: in
+xtick.labelsize : 25
+ytick.labelsize : 25
+
+errorbar.capsize: 6
+
+image.cmap: cividis
