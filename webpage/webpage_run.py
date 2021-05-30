@@ -66,7 +66,8 @@ def create_table_with_links_to_reports(file_name: str = "reports.json") -> str:
         )
         raise RuntimeError(error_message) from err
 
-    buffer = Buffer("<h2>Reports</h2>")
+    buffer = Buffer()
+    buffer.write_to_buffer("<h2>Reports</h2>")
 
     for author, reports in data.items():
         if reports:
@@ -223,7 +224,11 @@ def fetch_current_runs_names(
                 # Snapshot with the highest number corresponds to the lowest redshift
                 N_latest_snp = sorted(snp_nums)[-1]
 
-                z = run_z_list[N_latest_snp]
+                try:
+                    z = run_z_list[N_latest_snp]
+                except IndexError:
+                    z = "0.5"
+
                 run_redshifts.append(z)
             else:
                 run_redshifts.append("Enqueued")
@@ -232,12 +237,13 @@ def fetch_current_runs_names(
         run_names = run_names[1:-1]
         run_redshifts = run_redshifts[1:-1]
 
-    except IOError:
+    except (IOError, ValueError):
         print(f"File {file_with_redshifts:s} cannot be open")
 
     # Block with the info on ongoing runs
-    buffer = Buffer("")
-    buffer.write_to_buffer("""
+    buffer = Buffer()
+    buffer.write_to_buffer(
+        """
         <h2>Names of ongoing runs<span style="float:right; color:black">Current z</span></h2>
         <ol>"""
     )
@@ -283,7 +289,7 @@ def create_webpage(
         "date": "Sort by date",
         "redshift": "Sort by redshift",
     }
-    extra_tabs = {"xmas2020": "Xmas", "hawk": "Hawk", "zooms": "Zooms"}
+    extra_tabs = {"xmas2020": "NEWEST", "hawk": "HAWK", "zooms": "ZOOMS"}
     tabs.update(extra_tabs)
 
     # Traverse tree
@@ -307,7 +313,6 @@ def create_webpage(
 
     tab_tree_top = f"""<h1>Path to current directory: {PATH} 
                       <span style="float:right; color:blue;"> Uploaded
-                      <span style="color:black"> Current z </span> 
                       </span>
                       </h1>"""
 
@@ -373,7 +378,7 @@ def create_webpage(
 
     # Open middle column
     obj.write_body(
-        """<div class="content"; style="margin-left: 1em; max-width: 450px;">"""
+        """<div class="content"; style="margin-left: 1em; max-width: 550px;">"""
     )
 
     # Block with general information
@@ -399,7 +404,9 @@ def create_webpage(
     obj.write_body("""</div>""")
 
     # Plots to the third column
-    obj.write_body("""<div class="content"; style="margin-left: 1em; max-width: 330px">""")
+    obj.write_body(
+        """<div class="content"; style="margin-left: 1em; max-width: 330px">"""
+    )
     obj.write_body(plots)
     obj.write_body("</div>")
 

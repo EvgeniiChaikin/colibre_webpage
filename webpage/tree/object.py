@@ -21,6 +21,10 @@ class Tree:
     run_param_page_icon = f"""<i style="float:right; color:#A9A9A9; font-size:13px" class="fa"> &#xf013 {white_space}</i>"""
     used_param_file_name = "used_parameters.html"
 
+    # Link and icon for morphology page
+    morphology_page_icon = f"""<i style="float:right; color:#FF8C00; font-size:18px" class="fa">&#xf06e {white_space}</i>"""
+    morphology_file_name = "morphology.html"
+
     # Categories to look for
     individual = "individual_runs"
     comparison = "comparisons"
@@ -79,11 +83,11 @@ class Tree:
         """
 
         if days_ago > 1:
-            string = Content(f"{days_ago:d} days ago {self.white_space * 9}")
+            string = Content(f"{days_ago:d} days ago")
         elif days_ago == 1:
-            string = Content(f"{days_ago:d} day ago {self.white_space * 9}")
+            string = Content(f"{days_ago:d} day ago")
         else:
-            string = Content(f"{days_ago:d} New {self.white_space * 9}")
+            string = Content(f"{days_ago:d} New")
 
         string.wrap_text(block="i")
         string.wrap_text(block="span", span_style="float:right; color:#0000FF")
@@ -156,6 +160,12 @@ class Tree:
                         settings = f"""<a href="{relative_path}/{dir_name}/{self.used_param_file_name}" target="_blank">
                           {self.run_param_page_icon}</a>"""
 
+                    if os.path.isfile(
+                        f"{absolute_dir_path:}/{self.morphology_file_name}"
+                    ):
+                        settings = f"""<a href="{relative_path}/{dir_name}/{self.morphology_file_name}" target="_blank">
+                          {self.morphology_page_icon}</a>"""
+
                     text = f"{dir_name}{modified}"
                     link_list = f"<li><a href={link_to_plots}>{text}</a>{settings}{morphology}</li>"
                     self.run_links.append(link_list)
@@ -179,21 +189,22 @@ class Tree:
                                 == f"{self.white_space} {self.white_space} |".split()
                             ):
                                 arg = text.find("|")
-                                text = f" {self.white_space*3}{text[arg+2:]}"
+                                text = f" {self.white_space * 3}{text[arg + 2:]}"
 
                             elif string_split[:3] == f"| {self.white_space} |".split():
                                 indent = 8
                                 arg = text[indent:].find("|")
-                                text = f" | {self.white_space*2}{text[indent+arg+1:]}"
+                                text = f" | {self.white_space * 2}{text[indent + arg + 1:]}"
 
                             string = f"<li><a href={link_to_plots}>{text}</a>{settings:s}{morphology:s}</li>"
                             self.tabs[tab_name]["data"].append(string)
 
                 # Not a leaf
                 else:
-                    link_text = f"{visual_line} |_<b> {dir_name} </b>"
-                    string = f"<li>{link_text}</li>"
+                    text = f"{visual_line} |_<b> {dir_name} </b>"
+                    string = f"<li>{text}</li>"
                     self.data.write_to_buffer(string)
+                    rel_path_dir = f"{relative_path}/{dir_name}"
 
                     # Extra tabs
                     if dir_name == self.individual or dir_name == self.comparison:
@@ -201,8 +212,22 @@ class Tree:
                             self.tabs[tab_name]["data"].append(string)
 
                     for (tab_name, tab_content) in self.tabs.items():
-                        if dir_name == tab_content["directory"]:
-                            self.tabs[tab_name]["data"].append(string)
+                        if rel_path_dir.find(tab_content["directory"]) > -1:
+                            string_split = text.split()
+
+                            if (
+                                string_split[:3]
+                                == f"{self.white_space} {self.white_space} |".split()
+                            ):
+                                arg = text.find("|")
+                                text = f" {self.white_space * 3}{text[arg + 2:]}"
+
+                            elif string_split[:3] == f"| {self.white_space} |".split():
+                                indent = 8
+                                arg = text[indent:].find("|")
+                                text = f" | {self.white_space * 2}{text[indent + arg + 1:]}"
+
+                            self.tabs[tab_name]["data"].append(f"<li>{text}</li>")
 
                 # Evolve tree representation
                 if dir_counter < N_of_dir - 1:

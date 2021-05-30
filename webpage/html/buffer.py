@@ -7,16 +7,11 @@ import io
 
 class Buffer:
 
-    def __init__(self, text: str = ""):
+    def __init__(self):
         """
         Initialises the text content
-
-        Parameters
-        -------
-        text: str
-        Initial text to build the class for
         """
-        self.__buffer = io.StringIO(initial_value=text)
+        self.__buffer = io.StringIO()
 
     def __del__(self):
 
