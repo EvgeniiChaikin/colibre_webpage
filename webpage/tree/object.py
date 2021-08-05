@@ -17,6 +17,9 @@ class Tree:
     # Html is wield
     white_space: str = "&nbsp "
 
+    # Maximum depth
+    max_depth: int
+
     # Display used parameters in html format
     run_param_page_icon = f"""<i style="float:right; color:#A9A9A9; font-size:13px" class="fa"> &#xf013 {white_space}</i>"""
     used_param_file_name = "used_parameters.html"
@@ -29,11 +32,18 @@ class Tree:
     individual = "individual_runs"
     comparison = "comparisons"
 
-    def __init__(self, tabs=None, plot_webpage_name: str = "index.html", debug=False):
+    def __init__(
+        self,
+        tabs=None,
+        plot_webpage_name: str = "index.html",
+        debug=False,
+        max_depth: int = 7,
+    ):
         if tabs is None:
             tabs = {}
 
         self.__debug = debug
+        self.max_depth = max_depth
 
         self.tabs: Dict[str, Dict[str, Union[str, List]]] = {
             key: {"data": [], "directory": value} for (key, value) in tabs.items()
@@ -128,11 +138,11 @@ class Tree:
             # Do not do anything if it is a file
             if os.path.isdir(absolute_dir_path):
 
-                if absolute_dir_path.find(self.individual) > -1:
-                    self.N_individual_runs += 1
-                elif absolute_dir_path.find(self.comparison) > -1:
-                    self.N_comparisons += 1
-                else:
+                # Skip irrelevant directories
+                if (
+                    absolute_dir_path.find(self.individual) == -1
+                    and absolute_dir_path.find(self.comparison) == -1
+                ):
                     continue
 
                 # Number of sub-directories in a given sub-directory of this directory.
@@ -149,6 +159,11 @@ class Tree:
 
                 # Check if the directory is a leaf node
                 if is_leaf:
+
+                    if absolute_dir_path.find(self.individual) > -1:
+                        self.N_individual_runs += 1
+                    else:
+                        self.N_comparisons += 1
 
                     # Time data
                     days_ago = self.find_creating_time(absolute_dir_path)
@@ -183,6 +198,9 @@ class Tree:
                         redshift = float(dir_name[1:4])
                         self.uploads_z.append(redshift)
                     except ValueError:
+                        print(
+                            f"WARNING! Name {dir_name} does not have a redshift prefix 'z?.?_'"
+                        )
                         pass
 
                     # Extra tabs
@@ -241,8 +259,11 @@ class Tree:
                     new_visual_line = f"{visual_line} {self.white_space * 2}"
 
                 # Recurse
-                self.walk(
-                    absolute_dir_path,
-                    depth + 1,
-                    new_visual_line,
-                )
+                if depth + 1 <= self.max_depth:
+                    self.walk(
+                        absolute_dir_path, depth + 1, new_visual_line,
+                    )
+                else:
+                    print(
+                        f"WARNING! Maximum depth of the tree (max_depth = {self.max_depth}) is exceeded!"
+                    )

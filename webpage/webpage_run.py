@@ -48,14 +48,21 @@ def traverse_tree(initial_path: str, tabs: Dict[str, str], debug: False) -> Tree
     tree = Tree(tabs=tabs, debug=debug)
 
     if debug:
-        print("Starting traversal...")
+        print("Starting tree traversal...")
         print("")
 
     tree.walk(abs_path=initial_path)
 
+    if tree.N_individual_runs + tree.N_comparisons == 0:
+        print("")
+        print(
+            f"""WARNING! The number of leaf nodes of the tree is zero! Does the root '{initial_path}' have
+              sub-directories named '{tree.individual}' and '{tree.comparison}'?"""
+        )
+
     if debug:
         print("")
-        print("Finishing traversal...")
+        print("Finishing tree traversal...")
         print("")
 
     return tree
@@ -237,15 +244,14 @@ def fetch_current_runs_names(
     except Exception:
         print("Cannot run the slurm command 'squeue'")
 
-
     if debug:
         print(" ")
         print(f"Found {len(paths[1:-1])} ongoing runs.")
         print(" ")
-    
+
     # Loop over paths to ongoing runs
     for path in paths:
- 
+
         if debug:
             print(path)
 
@@ -391,10 +397,11 @@ def create_webpage(
     # Open tabs
     obj.create_tab_panel_open(tabs=tabs)
 
-    tab_tree_top = f"""<h1>Path to root: {path_to_root} 
+    tab_tree_top = f"""<h3>Path to root: {path_to_root} 
                       <span style="float:right; color:blue;"> Uploaded
+                      {tree.white_space}
                       </span>
-                      </h1>"""
+                      </h3>"""
 
     # Tab 1
     tab1 = Content(tab_tree_top)

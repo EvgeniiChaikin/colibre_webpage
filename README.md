@@ -50,7 +50,7 @@ python3 ./webpage_run.py \
         -r Root_directory \ # path to the root of the three
         -u dc-cosma-user \ # Name of the user\'s account on cosma. This is needed to run the slurm command to see which runs are ongoing
         -s colibre \ # Pattern in simulation output files
-        -z ./output.dat \ # Path to file with the redshifts for output files 
+        -z ./output_list.txt\ # Path to file with the redshifts for output files 
         -t Tab1 Tab2  \ # Extra tabs that will be added to the tab bar 
         -o ./output_path \ # Path to directory where the output html page will be saved
         -d  \ # Running in debug mode
