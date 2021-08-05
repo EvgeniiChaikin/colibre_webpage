@@ -109,11 +109,11 @@ def create_plots(
 ) -> str:
 
     # Absolute path to where the script is executed!
-    abs_path = os.getcwd()
-    relative_path = abs_path.replace(prefix, "")
+    absolute_path = os.getcwd()
+    relative_path = absolute_path.replace(prefix, "")
 
     # Import pretty style for plotting
-    import_style(style=f"{abs_path}/plots/style.mplstyle")
+    import_style(style=f"{absolute_path}/plots/style.mplstyle")
 
     if ongoing_runs is None:
         ongoing_runs = []
@@ -131,7 +131,8 @@ def create_plots(
     ax.set_xticks([0, 1, 2, 3, 4, 5])
     plt.xlabel("Redshift")
     plt.ylabel("Number of ongoing runs")
-    num_of_ongoing_runs_z = f"{relative_path}/plots/Number_of_ongoing_runs_z.png"
+    num_of_ongoing_runs_z = f"{absolute_path}/plots/Number_of_ongoing_runs_z.png"
+    num_of_ongoing_runs_z_web = f"{relative_path}/plots/Number_of_ongoing_runs_z.png"
     plt.savefig(num_of_ongoing_runs_z, bbox_inches="tight", pad_inches=0.1)
     plt.close()
 
@@ -146,7 +147,8 @@ def create_plots(
     ax.set_xticks([0, 30, 60, 90, 120, 150])
     plt.xlabel("Days since last update")
     plt.ylabel("Number of analysis pages")
-    num_of_uploads = f"{relative_path}/plots/Number_of_uploads.png"
+    num_of_uploads = f"{absolute_path}/plots/Number_of_uploads.png"
+    num_of_uploads_web = f"{relative_path}/plots/Number_of_uploads.png"
     plt.savefig(num_of_uploads, bbox_inches="tight", pad_inches=0.1)
     plt.close()
 
@@ -163,7 +165,8 @@ def create_plots(
     ax.yaxis.set_tick_params()
     plt.xlabel("Redshift")
     plt.ylabel("Number of pages with plots")
-    num_of_analysed_runs_z = f"{relative_path}/plots/Number_of_analysed_runs_z.png"
+    num_of_analysed_runs_z = f"{absolute_path}/plots/Number_of_analysed_runs_z.png"
+    num_of_analysed_runs_z_web = f"{relative_path}/plots/Number_of_analysed_runs_z.png"
     plt.savefig(num_of_analysed_runs_z, bbox_inches="tight", pad_inches=0.1)
     plt.close()
 
@@ -172,13 +175,13 @@ def create_plots(
         f"""<h2>Run statistics</h2>
             <ul>
             <li><b>Redshifts of ongoing runs:</b><br>
-            <img src="{num_of_ongoing_runs_z:s}" 
+            <img src="{num_of_ongoing_runs_z_web:s}" 
             alt="Num of ongoing runs vs z" width="325" height="325"></li>
             <li><b>Num of uploads in the last 2 months:</b><br>
-            <img src="{num_of_uploads:s}" 
+            <img src="{num_of_uploads_web:s}" 
             alt="Num of run uploads" width="325" height="325"></li><br>
             <li><b>Redshifts of statistics pages:</b><br>
-            <img src="{num_of_analysed_runs_z:s}" 
+            <img src="{num_of_analysed_runs_z_web:s}" 
             alt="Num of analysed runs vs z" width="325" height="325"></li>
             </ul>"""
     )
@@ -187,7 +190,7 @@ def create_plots(
 
 
 def fetch_current_runs_names(
-    user: str, file_with_redshifts: str, file_pattern: str,
+    user: str, file_with_redshifts: str, file_pattern: str, debug: bool = False
 ) -> Tuple[str, List[str]]:
     """
     Find currently ongoing runs
@@ -234,8 +237,17 @@ def fetch_current_runs_names(
     except Exception:
         print("Cannot run the slurm command 'squeue'")
 
+
+    if debug:
+        print(" ")
+        print(f"Found {len(paths[1:-1])} ongoing runs.")
+        print(" ")
+    
     # Loop over paths to ongoing runs
     for path in paths:
+ 
+        if debug:
+            print(path)
 
         # Looking for names
         file_paths = [
@@ -288,6 +300,11 @@ def fetch_current_runs_names(
             <span style="float:right;">{ run_redshifts[idx]:s}</span></li>"""
             )
     buffer.write_to_buffer("</ol>")
+
+    if debug:
+        print(" ")
+        print("Finished fetching info about the ongoing runs.")
+        print(" ")
 
     return buffer.get_content(), run_redshifts
 
@@ -361,6 +378,7 @@ def create_webpage(
         user=user,
         file_with_redshifts=path_to_file_with_redshifts,
         file_pattern=snapshot_name,
+        debug=debug,
     )
     plots = create_plots(tree, ongoing_runs=redshifts_ongoing)
 
