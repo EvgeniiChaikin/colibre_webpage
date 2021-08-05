@@ -29,9 +29,11 @@ class Tree:
     individual = "individual_runs"
     comparison = "comparisons"
 
-    def __init__(self, tabs=None, plot_webpage_name: str = "index.html"):
+    def __init__(self, tabs=None, plot_webpage_name: str = "index.html", debug=False):
         if tabs is None:
             tabs = {}
+
+        self.__debug = debug
 
         self.tabs: Dict[str, Dict[str, Union[str, List]]] = {
             key: {"data": [], "directory": value} for (key, value) in tabs.items()
@@ -87,7 +89,7 @@ class Tree:
         elif days_ago == 1:
             string = Content(f"{days_ago:d} day ago")
         else:
-            string = Content(f"{days_ago:d} New")
+            string = Content("New")
 
         string.wrap_text(block="i")
         string.wrap_text(block="span", span_style="float:right; color:#0000FF")
@@ -105,6 +107,9 @@ class Tree:
         This function traverses the directory tree collecting necessary information in
         order to create a general html page with the runs' info and statistics
         """
+
+        if self.__debug:
+            print(abs_path)
 
         relative_path = abs_path.replace(prefix, "")
 
@@ -163,8 +168,8 @@ class Tree:
                     if os.path.isfile(
                         f"{absolute_dir_path:}/{self.morphology_file_name}"
                     ):
-                        settings = f"""<a href="{relative_path}/{dir_name}/{self.morphology_file_name}" target="_blank">
-                          {self.morphology_page_icon}</a>"""
+                        morphology = f"""<a href="{relative_path}/{dir_name}/{self.morphology_file_name}" target="_blank">
+                                                   {self.morphology_page_icon}</a>"""
 
                     text = f"{dir_name}{modified}"
                     link_list = f"<li><a href={link_to_plots}>{text}</a>{settings}{morphology}</li>"

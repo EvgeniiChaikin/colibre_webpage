@@ -140,7 +140,7 @@ class HtmlPage:
 
         return
 
-    def visualise_webpage(self):
+    def finish_webpage(self):
         """
         Opens the webpage using the default browser
         """
@@ -148,7 +148,9 @@ class HtmlPage:
         # Create and save webpage if the file does not exist yet
         self.save_webpage()
 
-        webbrowser.open_new_tab(self.__webpage_filename)
+        # If debug, visualise the webpage in the browser
+        if self.__debug:
+            webbrowser.open_new_tab(self.__webpage_filename)
 
         return
 
