@@ -1,8 +1,11 @@
 # Colibre webpage
+--------------
+
 A package for arranging and visualising Colibre data
 
+
+Description
 --------------
-## Description
 
 Generate a tree with html pages containing plots from COLIBRE (or other projects') runs.
 The script assumes that the run directories begin with `z?.?_` prefix where 
