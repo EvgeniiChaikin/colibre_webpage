@@ -356,8 +356,12 @@ def create_webpage(
     """
 
     today_pretty_format = datetime.now().strftime("%d/%m/%Y at %H:%M:%S")
-    absolute_path = os.getcwd()
+
+    # Absolute path to executed script
+    absolute_path = os.path.dirname(os.path.abspath(__file__))
+
     path_to_style = f"{absolute_path}/html/style.html"
+    path_to_reports = f"{absolute_path}/reports.json"
 
     # Create html page
     obj = HtmlPage(filename=f"{path_to_output}/{htmlfile_name}", debug=debug)
@@ -383,7 +387,7 @@ def create_webpage(
     tree_content = Content(tree.data.get_content())
 
     # Compute additional properties
-    reports = create_table_with_links_to_reports()
+    reports = create_table_with_links_to_reports(file_name=path_to_reports)
     current_runs, redshifts_ongoing = fetch_current_runs_names(
         user=user,
         file_with_redshifts=path_to_file_with_redshifts,
