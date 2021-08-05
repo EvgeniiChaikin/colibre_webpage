@@ -105,10 +105,12 @@ def create_plots(
     size_x: float = 8,
     size_y: float = 8,
     z_max: float = 127,
+    prefix: str = "/cosma/home/www/swift.dur.ac.uk/public_html",
 ) -> str:
 
     # Absolute path to where the script is executed!
     abs_path = os.getcwd()
+    relative_path = abs_path.replace(prefix, "")
 
     # Import pretty style for plotting
     import_style(style=f"{abs_path}/plots/style.mplstyle")
@@ -129,7 +131,7 @@ def create_plots(
     ax.set_xticks([0, 1, 2, 3, 4, 5])
     plt.xlabel("Redshift")
     plt.ylabel("Number of ongoing runs")
-    num_of_ongoing_runs_z = f"{abs_path}/plots/Number_of_ongoing_runs_z.png"
+    num_of_ongoing_runs_z = f"{relative_path}/plots/Number_of_ongoing_runs_z.png"
     plt.savefig(num_of_ongoing_runs_z, bbox_inches="tight", pad_inches=0.1)
     plt.close()
 
@@ -144,7 +146,7 @@ def create_plots(
     ax.set_xticks([0, 30, 60, 90, 120, 150])
     plt.xlabel("Days since last update")
     plt.ylabel("Number of analysis pages")
-    num_of_uploads = f"{abs_path}/plots/Number_of_uploads.png"
+    num_of_uploads = f"{relative_path}/plots/Number_of_uploads.png"
     plt.savefig(num_of_uploads, bbox_inches="tight", pad_inches=0.1)
     plt.close()
 
@@ -161,7 +163,7 @@ def create_plots(
     ax.yaxis.set_tick_params()
     plt.xlabel("Redshift")
     plt.ylabel("Number of pages with plots")
-    num_of_analysed_runs_z = f"{abs_path}/plots/Number_of_analysed_runs_z.png"
+    num_of_analysed_runs_z = f"{relative_path}/plots/Number_of_analysed_runs_z.png"
     plt.savefig(num_of_analysed_runs_z, bbox_inches="tight", pad_inches=0.1)
     plt.close()
 
@@ -249,7 +251,7 @@ def fetch_current_runs_names(
             run_names.append("None")
 
         # Looking for redshifts
-        file_paths = sorted(glob.glob(f"{path}/{file_pattern}.hdf5"))
+        file_paths = sorted(glob.glob(f"{path}/*{file_pattern}*.hdf5"))
 
         if file_paths:
             # The path must be of the form "*/*_????.hdf5"
