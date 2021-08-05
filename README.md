@@ -5,7 +5,7 @@ A package for arranging and visualising Colibre data
 Description
 --------------
 
-Generate a tree with html pages containing plots from COLIBRE (or other projects') runs.
+Generates a tree whose leaf nodes are html pages containing plots from COLIBRE (or other projects') runs.
 The script assumes that the run directories begin with `z?.?_` prefix where 
 the first and second question marks are the first and second digit of the value 
 of the redshift at which plots for the respective directory are made.
@@ -38,7 +38,7 @@ Root_directory
 ```
 
 Note that
-1. Each leaf of the tree is a directory with no subdirectories. The script expects that it contains `index.html` file with the plot;
+1. Each leaf of the tree is a directory with no subdirectories. The script expects that it contains `index.html` file with the plots;
 2. Names of all leaf nodes must start with `z?.?_` prefix where 
 the first and second question marks are the first and second digit of the value 
 of the redshift at which plots for the respective directory are made;
