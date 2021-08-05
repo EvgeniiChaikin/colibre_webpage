@@ -108,6 +108,7 @@ def create_table_with_links_to_reports(file_name: str = "reports.json") -> str:
 
 def create_plots(
     tree: Tree,
+    absolute_path,
     ongoing_runs=None,
     size_x: float = 8,
     size_y: float = 8,
@@ -115,8 +116,7 @@ def create_plots(
     prefix: str = "/cosma/home/www/swift.dur.ac.uk/public_html",
 ) -> str:
 
-    # Absolute path to where the script is executed!
-    absolute_path = os.getcwd()
+    # Get relative path (only for cosma)
     relative_path = absolute_path.replace(prefix, "")
 
     # Import pretty style for plotting
@@ -323,7 +323,6 @@ def create_webpage(
     path_to_output: str,
     extra_tab_names: List[str] = "",
     htmlfile_name: str = "index.html",
-    path_to_style: str = "./html/style.html",
     debug: bool = False,
 ):
     """
@@ -352,25 +351,30 @@ def create_webpage(
     htmlfile_name: str
     Name(s) of html files for webpages with plots
 
-    path_to_style: str
-    Path to file with a style for webpage
-
     debug: bool
     Extra output and checks for debugging?
     """
 
     today_pretty_format = datetime.now().strftime("%d/%m/%Y at %H:%M:%S")
+    absolute_path = os.getcwd()
+    path_to_style = f"{absolute_path}/html/style.html"
 
+    # Create html page
     obj = HtmlPage(filename=f"{path_to_output}/{htmlfile_name}", debug=debug)
+
+    # Load style for the html page
     obj.load_style(path_to_file=path_to_style)
 
+    # Main tabs
     tabs = {
         "full_tree": "Full tree",
         "date": "Sort by date",
         "redshift": "Sort by redshift",
     }
+
+    # Extra tabs provided by the user
     extra_tabs = {
-        str(count): tab_name for count, tab_name in enumerate(extra_tab_names)
+        str(idx): tab_name for idx, tab_name in enumerate(extra_tab_names)
     }
     tabs.update(extra_tabs)
 
@@ -386,7 +390,7 @@ def create_webpage(
         file_pattern=snapshot_name,
         debug=debug,
     )
-    plots = create_plots(tree, ongoing_runs=redshifts_ongoing)
+    plots = create_plots(tree, absolute_path=absolute_path, ongoing_runs=redshifts_ongoing)
 
     # Flex container
     obj.write_body(
