@@ -4,11 +4,11 @@
 Builds an html page using various blocks of data
 """
 
-from tree.html.object import HtmlPage
-from tree.html.content import Content
-from tree.html.buffer import Buffer
+from webpage.tree.html.object import HtmlPage
+from webpage.tree.html.content import Content
+from webpage.tree.html.buffer import Buffer
 
-from tree.object import Tree
+from webpage.tree.object import Tree
 
 from datetime import datetime
 from typing import Dict, Tuple, List
@@ -19,7 +19,7 @@ import glob
 import os
 import argparse
 
-from plots.plot_style import import_style, create_plot_with_style
+from webpage.plots.plot_style import import_style, create_plot_with_style
 import matplotlib.pylab as plt
 
 
@@ -326,6 +326,7 @@ def create_webpage(
     extra_tab_names: List[str] = "",
     htmlfile_name: str = "index.html",
     debug: bool = False,
+    visualise: bool = False
 ):
     """
     Create the webpage step by step
@@ -355,6 +356,9 @@ def create_webpage(
 
     debug: bool
     Extra output and checks for debugging?
+
+    visualise: bool
+    Show the webpage in browser after the script has been executed?
     """
 
     today_pretty_format = datetime.now().strftime("%d/%m/%Y at %H:%M:%S")
@@ -507,7 +511,12 @@ def create_webpage(
     obj.write_body(plots)
     obj.write_body("</div>")
 
-    obj.finish_webpage()
+    # Build and save the webpage
+    obj.build_webpage()
+    obj.save_webpage()
+
+    if visualise:
+        obj.open_in_browser()
 
 
 if __name__ == "__main__":
@@ -592,6 +601,15 @@ if __name__ == "__main__":
         help="Run the script in debug mode if this flag is present. Default: no debug.",
     )
 
+    parser.add_argument(
+        "-v",
+        "--show-in-browser",
+        required=False,
+        default=False,
+        action="store_true",
+        help="Open the webpage in the default browser following the execution of the script. Default: False",
+    )
+
     config = parser.parse_args()
 
     print("Creating webpage...")
@@ -622,4 +640,5 @@ if __name__ == "__main__":
         path_to_output=config.output,
         extra_tab_names=config.tabs,
         debug=config.debug,
+        visualise=config.show_in_browser
     )
