@@ -1,0 +1,4 @@
+include LICENSE
+recursive-include webpage *.json
+recursive-include webpage *.mplstyle
+recursive-include webpage *.txt

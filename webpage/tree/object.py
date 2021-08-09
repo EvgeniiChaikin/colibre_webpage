@@ -4,8 +4,8 @@ Tree class
 
 import os
 from datetime import datetime
-from html.buffer import Buffer
-from html.content import Content
+from .html.buffer import Buffer
+from .html.content import Content
 from typing import List, Dict, Union
 
 

@@ -4,10 +4,12 @@
 Builds an html page using various blocks of data
 """
 
-from html.object import HtmlPage
-from html.content import Content
-from html.buffer import Buffer
+from tree.html.object import HtmlPage
+from tree.html.content import Content
+from tree.html.buffer import Buffer
+
 from tree.object import Tree
+
 from datetime import datetime
 from typing import Dict, Tuple, List
 import subprocess
@@ -360,7 +362,7 @@ def create_webpage(
     # Absolute path to executed script
     absolute_path = os.path.dirname(os.path.abspath(__file__))
 
-    path_to_style = f"{absolute_path}/html/style.html"
+    path_to_style = f"{absolute_path}/tree/html/style.html"
     path_to_reports = f"{absolute_path}/reports.json"
 
     # Create html page

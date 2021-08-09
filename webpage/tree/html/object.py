@@ -1,7 +1,7 @@
 from os import path
 import webbrowser
-from html.buffer import Buffer
-from html.content import Content
+from .buffer import Buffer
+from .content import Content
 from typing import Dict, Optional
 
 
