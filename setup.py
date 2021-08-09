@@ -7,7 +7,7 @@ with open("README.md", "r") as fh:
 setup(
     name="colibre_webpage",
     version=__version__,
-    packages=["webpage", "webpage.html", "webpage.tree", "webpage.plots"],
+    packages=["webpage", "webpage.tree.html", "webpage.tree", "webpage.plots"],
     url="https://github.com/EvgeniiChaikin/colibre_webpage",
     license="MIT",
     author="Evgenii Chaikin",
