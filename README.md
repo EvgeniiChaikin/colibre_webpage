@@ -14,6 +14,15 @@ former contains plots with data from single runs, while in the latter data from
 multiple runs is shown.
 
 
+Install
+--------------
+In the root directory of this repository, run
+```
+pip install -e .
+```
+
+
+
 Running
 --------------
 
@@ -46,14 +55,15 @@ of the redshift at which plots for the respective directory are made;
 
 To run the script, use
 ```bash
-python3 ./webpage_run.py \ 
+colibre-webpage \ 
         -r Root_directory \ # path to the root of the three
         -u dc-cosma-user \ # Name of the user\'s account on cosma. This is needed to run the slurm command to see which runs are ongoing
         -s colibre \ # Pattern in simulation output files
-        -z ./output_list.txt\ # Path to file with the redshifts for output files 
+        -z ./output_list.txt \ # Path to the file with redshifts for output files from the cosmological run(s) 
         -t Tab1 Tab2  \ # Extra tabs that will be added to the tab bar 
-        -o ./output_path \ # Path to directory where the output html page will be saved
+        -o ./output_path \ # Path to the directory where the generated html page will be saved
         -d  \ # Running in debug mode
+        -v  \ # Immediately open the webpage in the default browser
 ```
 
 
