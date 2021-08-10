@@ -2,7 +2,7 @@ from os import path
 import webbrowser
 from .buffer import Buffer
 from .content import Content
-from typing import Dict, Optional
+from typing import Dict, Optional, Union
 
 
 class HtmlPage:
@@ -11,24 +11,27 @@ class HtmlPage:
 
     def __init__(self, filename: str, debug=False):
 
-        self.__html_style = """"""
+        self._html_style = """"""
 
         # Open head and body streams (for reading and writing)
-        self.__html_head = Buffer()
-        self.__html_body = Buffer()
+        self._html_head = Buffer()
+        self._html_body = Buffer()
 
-        self.__debug = debug
+        self._debug = debug
 
         # Name of the output file
-        self.__webpage_filename = filename
+        self._webpage_filename = filename
+
+        # Webpage content following build
+        self._webpage_content: Union[None, str] = None
 
     def __del__(self):
 
-        if self.__debug:
+        if self._debug:
             print("Destruction: Closing head and body streams")
 
         # Close the streams
-        del self.__html_head, self.__html_body
+        del self._html_head, self._html_body
 
         return
 
@@ -44,7 +47,7 @@ class HtmlPage:
         text to write to the head
         """
 
-        self.__html_head.write_to_buffer(text=text)
+        self._html_head.write_to_buffer(text=text)
         return
 
     def write_body(self, text: str):
@@ -58,33 +61,39 @@ class HtmlPage:
         text: str
         text to write to the body
         """
-        self.__html_body.write_to_buffer(text=text)
+        self._html_body.write_to_buffer(text=text)
         return
 
-    def render_webpage(self) -> str:
+    def build_webpage(self):
         """
-        Renders and returns the html page
-
-        Returns
-        -------
-
-        output: str
+        Builds the html page
         """
 
-        webpage = f"""
-                  <!DOCTYPE html>
-                  <html>
-                    <head>
-                      {self.__html_style}
-                      {self.__html_head.get_content()}
-                    </head>
-                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-                    <body>
-                      {self.__html_body.get_content()}
-                    </body>
-                  </html>
-                  """
-        return webpage
+        if self._debug:
+            print("Building webpage...")
+
+        if self._webpage_content is None:
+
+            webpage = f"""
+                      <!DOCTYPE html>
+                      <html>
+                        <head>
+                          {self._html_style}
+                          {self._html_head.get_content()}
+                        </head>
+                        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+                        <body>
+                          {self._html_body.get_content()}
+                        </body>
+                      </html>
+                      """
+
+            self._webpage_content = webpage
+
+        else:
+            raise RuntimeError("Webpage cannot be build because already exists!")
+
+        return
 
     def set_style(self, style: str):
         """
@@ -97,7 +106,7 @@ class HtmlPage:
         style in the html format
         """
 
-        self.__html_style = style
+        self._html_style = style
         return
 
     def load_style(self, path_to_file: str):
@@ -126,31 +135,30 @@ class HtmlPage:
 
     def save_webpage(self):
         """
-        Builds and saves the webpage into a file. If the file
-        already exists, overwrites it.
+        Saves the webpage into a file. If the file
+        already exists, overwrites it. The webpage has to be built first!
         """
 
-        with open(self.__webpage_filename, "w+") as out:
+        if self._webpage_content is not None:
 
-            if self.__debug:
-                print(f"Saving webpage into {self.__webpage_filename}...")
+            with open(self._webpage_filename, "w+") as out:
 
-            webpage = self.render_webpage()
-            out.write(webpage)
+                if self._debug:
+                    print(f"Saving webpage into {self._webpage_filename}...")
+
+                out.write(self._webpage_content)
 
         return
 
-    def finish_webpage(self):
+    def open_in_browser(self):
         """
-        Opens the webpage using the default browser
+        Opens the webpage using the default browser.
         """
 
-        # Create and save webpage if the file does not exist yet
-        self.save_webpage()
-
-        # If debug, visualise the webpage in the browser
-        if self.__debug:
-            webbrowser.open_new_tab(self.__webpage_filename)
+        if path.isfile(self._webpage_filename):
+            webbrowser.open_new_tab(self._webpage_filename)
+        else:
+            raise RuntimeError("The webpage can only be visualised after it has been built and saved into a file!")
 
         return
 
@@ -167,7 +175,7 @@ class HtmlPage:
         if tabs is None:
             tabs = {}
 
-        self.__html_body.write_to_buffer("""<div class="tab">""")
+        self._html_body.write_to_buffer("""<div class="tab">""")
 
         for (name, display_name) in tabs.items():
 
@@ -175,9 +183,9 @@ class HtmlPage:
             button = Content(display_name)
             button.wrap_text(block="button", button_class=button_attrs)
 
-            self.__html_body.write_to_buffer(button.getter())
+            self._html_body.write_to_buffer(button.getter())
 
-        self.__html_body.write_to_buffer("""</div>""")
+        self._html_body.write_to_buffer("""</div>""")
 
         return
 
@@ -191,7 +199,7 @@ class HtmlPage:
         tab_content: str
         Tab content object
         """
-        self.__html_body.write_to_buffer(
+        self._html_body.write_to_buffer(
             f"""<script>
                   function openTab(evt, TabName) 
                   {{
